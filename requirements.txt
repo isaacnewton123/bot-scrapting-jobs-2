@@ -1,0 +1,6 @@
+telethon
+boto3
+pymongo
+dnspython
+aiohttp
+typing_extensions
