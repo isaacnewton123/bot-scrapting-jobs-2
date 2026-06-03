@@ -51,8 +51,13 @@ def upload_image_to_r2(image_url: str, slug: str) -> Optional[str]:
         return None
 
     try:
-        logger.info(f"Mendownload gambar: {image_url}")
-        req = urllib.request.Request(image_url, headers=HTTP_HEADERS)
+        import re
+        # Hapus prefix CDN Jetpack (i0.wp.com, dll) agar mendownload langsung dari server asli
+        # yang tidak nge-block IP datacenter Render
+        clean_url = re.sub(r'^https?://i[0-9]\.wp\.com/', 'https://', image_url)
+        
+        logger.info(f"Mendownload gambar: {clean_url}")
+        req = urllib.request.Request(clean_url, headers=HTTP_HEADERS)
         with urllib.request.urlopen(req) as response:
             image_data: bytes = response.read()
             content_type: str = response.headers.get("Content-Type", "image/jpeg")
